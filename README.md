@@ -88,9 +88,11 @@ curl http://localhost:8000/ollama/status  # Test Ollama connection
 1. **Install system dependencies**:
 ```bash
 sudo apt update
-sudo apt install -y python3.11 python3.11-venv python3-pip
 sudo apt install -y ffmpeg redis-server
 sudo apt install -y nvidia-driver-535 nvidia-cuda-toolkit  # For RTX 4090
+
+# Install cuDNN for GPU acceleration (required for transcription)
+sudo apt install -y libcudnn9-dev-cuda-12
 ```
 
 2. **Install uv and Python dependencies**:
@@ -98,7 +100,7 @@ sudo apt install -y nvidia-driver-535 nvidia-cuda-toolkit  # For RTX 4090
 curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone <repository>
 cd audio-diarizer
-uv sync
+uv sync  # uv automatically installs Python 3.11
 ```
 
 3. **Configure for production**:
@@ -405,6 +407,11 @@ The production setup includes:
 2. **pyannote model access denied**: Set `HUGGINGFACE_TOKEN` in `.env`
 3. **FFmpeg not found**: `sudo apt install ffmpeg`
 4. **Worker crashes**: Check GPU memory and driver compatibility
+5. **cuDNN errors** (`libcudnn_ops.so not found`): Install correct cuDNN version:
+   ```bash
+   sudo apt install -y libcudnn9-dev-cuda-12
+   ```
+6. **Worker killed during transcription**: Usually cuDNN library issue (see #5)
 
 ### Common Issues (Both)
 
