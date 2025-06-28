@@ -179,7 +179,9 @@ async def get_transcription_job(job_id: str) -> JobResponse:
         status=status,
         created_at=job_data["created_at"],
         completed_at=job_data.get("completed_at"),
-        error=job_data.get("error")
+        error=job_data.get("error"),
+        progress=job_data.get("progress"),
+        progress_percent=int(job_data["progress_percent"]) if job_data.get("progress_percent") else None
     )
     
     if status == JobStatus.COMPLETED and "result" in job_data:

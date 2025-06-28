@@ -65,8 +65,14 @@ class AudioDiarizationClient:
             elif status == "failed":
                 error = result.get("error", "Unknown error")
                 raise Exception(f"Job failed: {error}")
-            elif status in ["pending", "processing"]:
-                print(f"  Status: {status}")
+            elif status in ["pending", "processing", "preprocessing", "diarizing", "transcribing", "llm_analysis", "formatting"]:
+                # Show detailed progress
+                progress = result.get("progress", status.replace("_", " ").title())
+                progress_percent = result.get("progress_percent")
+                if progress_percent is not None:
+                    print(f"  [{progress_percent:3d}%] {progress}")
+                else:
+                    print(f"  Status: {progress}")
                 await asyncio.sleep(poll_interval)
             else:
                 raise Exception(f"Unknown status: {status}")

@@ -6,6 +6,11 @@ from pydantic import BaseModel, Field
 class JobStatus(str, Enum):
     PENDING = "pending"
     PROCESSING = "processing"
+    PREPROCESSING = "preprocessing"
+    DIARIZING = "diarizing"
+    TRANSCRIBING = "transcribing"
+    LLM_ANALYSIS = "llm_analysis"
+    FORMATTING = "formatting"
     COMPLETED = "completed"
     FAILED = "failed"
 
@@ -57,6 +62,8 @@ class JobResponse(BaseModel):
     completed_at: Optional[str] = Field(None, description="Job completion timestamp")
     result: Optional[TranscriptionResult] = Field(None, description="Transcription result")
     error: Optional[str] = Field(None, description="Error message if job failed")
+    progress: Optional[str] = Field(None, description="Current progress description")
+    progress_percent: Optional[int] = Field(None, ge=0, le=100, description="Progress percentage (0-100)")
 
 
 class JobCreate(BaseModel):
