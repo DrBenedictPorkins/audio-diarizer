@@ -1,0 +1,27 @@
+[Unit]
+Description=Audio Diarization Worker Process
+After=network.target redis.service audio-diarizer-api.service
+Requires=redis.service
+
+[Service]
+Type=exec
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/audio-diarizer
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=DEPLOYMENT_TARGET=production
+Environment=CUDA_VISIBLE_DEVICES=0
+EnvironmentFile=/home/ubuntu/audio-diarizer/.env
+ExecStart=/home/ubuntu/.local/bin/uv run scripts/start_worker.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=audio-diarizer-worker
+
+# Resource limits for GPU processing
+LimitNOFILE=65536
+MemoryMax=24G
+
+[Install]
+WantedBy=multi-user.target

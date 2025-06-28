@@ -1,0 +1,26 @@
+[Unit]
+Description=Audio Diarization API Server
+After=network.target redis.service
+Requires=redis.service
+
+[Service]
+Type=exec
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/audio-diarizer
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=DEPLOYMENT_TARGET=production
+EnvironmentFile=/home/ubuntu/audio-diarizer/.env
+ExecStart=/home/ubuntu/.local/bin/uv run main.py
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=audio-diarizer-api
+
+# Resource limits for RTX 4090 system
+LimitNOFILE=65536
+MemoryMax=16G
+
+[Install]
+WantedBy=multi-user.target
