@@ -134,6 +134,13 @@ The API will be available at `http://localhost:8000` with interactive docs at `h
 ### Start the Worker Process
 
 In a separate terminal:
+
+**For Ubuntu RTX 4090** (with cuDNN fix):
+```bash
+./scripts/start_worker_with_cudnn.sh
+```
+
+**For other systems**:
 ```bash
 uv run scripts/start_worker.py
 ```
@@ -407,10 +414,11 @@ The production setup includes:
 2. **pyannote model access denied**: Set `HUGGINGFACE_TOKEN` in `.env`
 3. **FFmpeg not found**: `sudo apt install ffmpeg`
 4. **Worker crashes**: Check GPU memory and driver compatibility
-5. **cuDNN errors** (`libcudnn_ops.so not found`): Install correct cuDNN version:
+5. **cuDNN errors** (`libcudnn_cnn.so.9.1.0 not found`): Use cuDNN-enabled startup script:
    ```bash
-   sudo apt install -y libcudnn9-dev-cuda-12
+   ./scripts/start_worker_with_cudnn.sh
    ```
+   This sets proper library paths for cuDNN 9.x on Ubuntu RTX 4090 systems.
 6. **Worker killed during transcription**: Usually cuDNN library issue (see #5)
 
 ### Common Issues (Both)
